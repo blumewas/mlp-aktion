@@ -1,0 +1,46 @@
+{
+    "name": "mlp-aktion",
+    "version": "1.0.1",
+    "main": "build/index.js",
+    "scripts": {
+        "build": "wp-scripts build",
+        "start": "wp-scripts start",
+        "format": "wp-scripts format",
+        "lint:css": "wp-scripts lint-style",
+        "lint:js": "wp-scripts lint-js",
+        "plugin-zip": "wp-scripts plugin-zip",
+        "check": "wp-scripts check",
+        "env": "wp-env"
+    },
+    "files": [
+        "admin",
+        "build",
+        "includes",
+        "languages",
+        "public",
+        "woocommerce",
+        "index.php",
+        "LICENSE.txt",
+        "mlp-aktion.php",
+        "README.txt",
+        "uninstall.php"
+    ],
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+        "@wordpress/block-editor": "^14.14.0",
+        "@wordpress/blocks": "^14.8.0",
+        "@wordpress/components": "^29.5.0",
+        "@wordpress/i18n": "^5.19.0",
+        "@wordpress/icons": "^10.20.0",
+        "@wordpress/scripts": "^30.12.0",
+        "clsx": "^2.1.1",
+        "lodash": "^4.17.21"
+    },
+    "devDependencies": {
+        "@woocommerce/dependency-extraction-webpack-plugin": "^2.2.0",
+        "@wordpress/env": "^10.20.0"
+    }
+}

@@ -1,0 +1,37 @@
+.mlp-aktion-checkbox-wrapper {
+	margin: 1em 0;
+	padding: 1em;
+    border: 1px solid #999;
+    border-radius: 1em;
+
+    span {
+        line-height: 1.5em;
+    }
+
+	.block-editor-rich-text__editable {
+		vertical-align: middle;
+		line-height: 24px;
+	}
+
+	.wc-block-components-checkbox {
+		margin-right: 16px;
+		margin-top: 0;
+	}
+
+    .wc-block-components-text-input__help {
+        font-size: 0.875em;
+        line-height: 1.1em;
+        margin-top: 0.25em;
+        white-space: initial;
+    }
+}
+
+.editor-styles-wrapper {
+
+	.mlp-aktion-checkbox-wrapper {
+		.wc-block-components-checkbox {
+			margin-right: 0;
+			margin-top: 0;
+		}
+	}
+}
