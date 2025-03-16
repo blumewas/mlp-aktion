@@ -1,14 +1,8 @@
 <?php
 
-/**
- * Register all actions and filters for the plugin
- *
- * @link       https://bonnermedis.de
- * @since      1.0.0
- *
- * @package    Mlp_Aktion
- * @subpackage Mlp_Aktion/includes
- */
+namespace Blumewas\MlpAktion\Plugin;
+
+use Blumewas\MlpAktion\Helper\Logger;
 
 /**
  * Register all actions and filters for the plugin.
@@ -17,13 +11,11 @@
  * the plugin, and register them with the WordPress API. Call the
  * run function to execute the list of actions and filters.
  *
- * @package    Mlp_Aktion
- * @subpackage Mlp_Aktion/includes
+ * @package    Blumewas\MlpAktion\Registry
  * @author     Andreas Schneider <anschneider187@gmail.com>
  */
-class Mlp_Aktion_Loader
+class Hooks
 {
-
     /**
      * The array of actions registered with WordPress.
      *
@@ -40,7 +32,7 @@ class Mlp_Aktion_Loader
      * @access   protected
      * @var      array    $filters    The filters registered with WordPress to fire when the plugin loads.
      */
-    protected $filters;
+    public $filters;
 
     /**
      * Initialize the collections used to maintain the actions and filters.
@@ -119,17 +111,29 @@ class Mlp_Aktion_Loader
      *
      * @since    1.0.0
      */
-    public function run()
+    public function init()
     {
-
         foreach ($this->filters as $hook) {
-            add_filter($hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args']);
+            // If component is set we want to add it alongside the callback
+            if ($component = $hook['component'] ?? false) {
+                add_filter($hook['hook'], array( $component, $hook['callback'] ), $hook['priority'], $hook['accepted_args']);
+
+                continue;
+            }
+
+            add_filter($hook['hook'], $hook['callback'], $hook['priority'], $hook['accepted_args']);
         }
 
         foreach ($this->actions as $hook) {
-            add_action($hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args']);
+            // If component is set we want to add it alongside the callback
+            if ($component = $hook['component'] ?? false) {
+                add_action($hook['hook'], array( $component, $hook['callback'] ), $hook['priority'], $hook['accepted_args']);
+
+                continue;
+            }
+
+            add_action($hook['hook'], $hook['callback'], $hook['priority'], $hook['accepted_args']);
         }
 
     }
-
 }

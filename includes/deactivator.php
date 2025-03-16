@@ -20,7 +20,7 @@
  * @subpackage Mlp_Aktion/includes
  * @author     Andreas Schneider <anschneider187@gmail.com>
  */
-class Mlp_Aktion_Deactivator {
+class Deactivator {
 
 	/**
 	 * Short Description. (use period)

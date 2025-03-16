@@ -1,0 +1,39 @@
+{
+    "name": "blumewas/mlp-aktion",
+    "description": "Wordpress plugin",
+    "type": "wordpress-plugin",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Blumewas\\MlpAktion\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Andreas Schneider",
+            "email": "anschneider187@gmail.com"
+        }
+    ],
+    "config": {
+        "optimize-autoloader": true,
+        "allow-plugins": true,
+        "preferred-install": "dist"
+    },
+    "require": {
+        "php": ">=8.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^12.0"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "sh ./bin/package-update.sh"
+        ],
+        "post-update-cmd": [
+            "sh ./bin/package-update.sh"
+        ],
+        "test": [
+            "phpunit"
+        ]
+    }
+}

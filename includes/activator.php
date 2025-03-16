@@ -20,7 +20,7 @@
  * @subpackage Mlp_Aktion/includes
  * @author     Andreas Schneider <anschneider187@gmail.com>
  */
-class Mlp_Aktion_Activator {
+class Activator {
 
 	/**
 	 * Short Description. (use period)
@@ -30,7 +30,10 @@ class Mlp_Aktion_Activator {
 	 * @since    1.0.0
 	 */
 	public static function activate() {
-
+        if (! class_exists('WooCommerce')) {
+            deactivate_plugins(plugin_basename(__FILE__));
+            wp_die('Dieses Plugin benötigt WooCommerce. Bitte installiere und aktiviere WooCommerce.', 'Plugin-Fehler', array('back_link' => true));
+        }
 	}
 
 }

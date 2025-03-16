@@ -11,17 +11,17 @@ const defaultRules = defaultConfig.module.rules.filter( ( rule ) => {
 module.exports = {
 	...defaultConfig,
 	entry: {
-		index: path.resolve( process.cwd(), 'src', 'js', 'index.js' ),
+		index: path.resolve( process.cwd(), 'assets', 'js', 'index.js' ),
 		'mlp-aktion-participate-checkbox': path.resolve(
 			process.cwd(),
-			'src',
+			'assets',
 			'js',
 			'participate-checkbox',
 			'index.js'
 		),
 		'mlp-aktion-participate-checkbox-frontend': path.resolve(
 			process.cwd(),
-			'src',
+			'assets',
 			'js',
 			'participate-checkbox',
 			'frontend.js'
@@ -41,7 +41,7 @@ module.exports = {
 						loader: 'sass-loader',
 						options: {
 							sassOptions: {
-								includePaths: [ 'src/css' ],
+								includePaths: [ 'assets/css' ],
 							},
 						},
 					},

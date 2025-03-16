@@ -25,9 +25,45 @@
  * Domain Path:       /languages
  */
 
-// If this file is called directly, abort.
-if (! defined('WPINC')) {
-    die;
+use Blumewas\MlpAktion\Autoloader;
+use Blumewas\MlpAktion\MlpAktion;
+
+if (! defined('ABSPATH')) {
+    exit; // Exit if accessed directly
+}
+
+/**
+ * Load core packages and the autoloader.
+ *
+ * The new packages and autoloader require PHP 5.6+.
+ */
+if (version_compare(PHP_VERSION, '8.0.0', '>=')) {
+    require __DIR__ . '/src/Autoloader.php';
+
+    if (! Autoloader::init()) {
+        return;
+    }
+} else {
+    function mlp_aktion_admin_php_notice()
+    {
+        ?>
+		<div id="message" class="error">
+			<p>
+			<?php
+            printf(
+                /* translators: %s is the word upgrade with a link to a support page about upgrading */
+                esc_html__('MLP Aktion benötigt mind. PHP Version 8.0 umzu funktionieren. Bitte aktualisieren Sie Ihre aktuelle PHP Version %s.', 'mlp-aktion'),
+                '<a href="https://wordpress.org/support/update-php/">' . esc_html__('upgrade', 'mlp-aktion') . '</a>'
+            );
+        ?>
+			</p>
+		</div>
+		<?php
+    }
+
+    add_action('admin_notices', 'mlp_aktion_admin_php_notice', 20);
+
+    return;
 }
 
 /**
@@ -43,15 +79,8 @@ define('MLP_AKTION_VERSION', '1.0.1');
  */
 function activate_mlp_aktion()
 {
-
-    if (!class_exists('WooCommerce')) {
-        deactivate_plugins(plugin_basename(__FILE__));
-        wp_die('Dieses Plugin benötigt WooCommerce. Bitte installiere und aktiviere WooCommerce.', 'Plugin-Fehler', array('back_link' => true));
-    }
-
-
-    require_once plugin_dir_path(__FILE__) . 'includes/class-mlp-aktion-activator.php';
-    Mlp_Aktion_Activator::activate();
+    require_once plugin_dir_path(__FILE__) . 'includes/activator.php';
+    Activator::activate();
 }
 
 /**
@@ -60,47 +89,27 @@ function activate_mlp_aktion()
  */
 function deactivate_mlp_aktion()
 {
-    require_once plugin_dir_path(__FILE__) . 'includes/class-mlp-aktion-deactivator.php';
-    Mlp_Aktion_Deactivator::deactivate();
+    require_once plugin_dir_path(__FILE__) . 'includes/deactivator.php';
+    Deactivator::deactivate();
 }
 
 register_activation_hook(__FILE__, 'activate_mlp_aktion');
 register_deactivation_hook(__FILE__, 'deactivate_mlp_aktion');
 
 /**
- * The core plugin class that is used to define internationalization,
- * admin-specific hooks, and public-facing site hooks.
+ * @return MlpAktion $plugin instance
  */
-require plugin_dir_path(__FILE__) . 'includes/mlp-aktion-helper.php';
-
-/**
- * The core plugin class that is used to define internationalization,
- * admin-specific hooks, and public-facing site hooks.
- */
-require plugin_dir_path(__FILE__) . 'includes/class-mlp-aktion.php';
-
-$basename = plugin_basename(__FILE__);
-add_filter("plugin_action_links_{$basename}", function ($links) {
-    $url = esc_url( get_admin_url(null, 'admin.php?page=wc-settings&tab=mlp_aktion'));
-    $settings_link = "<a href=\"$url\">" . __('Einstellungen', 'mlp-aktion') . '</a>';
-
-    array_unshift($links, $settings_link);
-    return $links;
-}, 20);
-
-/**
- * Begins execution of the plugin.
- *
- * Since everything within the plugin is registered via hooks,
- * then kicking off the plugin from this point in the file does
- * not affect the page life cycle.
- *
- * @since    1.0.0
- */
-function run_mlp_aktion()
+function MlpAktion() // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid
 {
+    /**
+     * The core plugin class that is used to define internationalization,
+     * admin-specific hooks, and public-facing site hooks.
+     */
+    require plugin_dir_path(__FILE__) . 'includes/helper.php';
 
-    $plugin = new Mlp_Aktion();
-    $plugin->run();
+    $basename = plugin_basename(__FILE__);
+
+    return MlpAktion::instance($basename);
 }
-run_mlp_aktion();
+
+$GLOBALS['mlp_aktion'] = MlpAktion();
