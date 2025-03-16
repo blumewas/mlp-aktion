@@ -6,11 +6,8 @@
         "build": "wp-scripts build",
         "start": "wp-scripts start",
         "format": "wp-scripts format",
-        "lint:css": "wp-scripts lint-style",
-        "lint:js": "wp-scripts lint-js",
-        "plugin-zip": "wp-scripts plugin-zip",
-        "check": "wp-scripts check",
-        "env": "wp-env"
+        "env": "wp-env",
+        "gulp": "node ./node_modules/gulp/bin/gulp.js"
     },
     "files": [
         "admin",
@@ -41,6 +38,9 @@
     },
     "devDependencies": {
         "@woocommerce/dependency-extraction-webpack-plugin": "^2.2.0",
-        "@wordpress/env": "^10.20.0"
+        "@wordpress/env": "^10.20.0",
+        "gulp": "^5.0.0",
+        "gulp-clean": "^0.4.0",
+        "merge-stream": "^2.0.0"
     }
 }

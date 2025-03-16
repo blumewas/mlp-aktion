@@ -84,9 +84,9 @@ class MLP_Aktion_Extend_Woo_Core
                 $mlp_atkion_contact_phone = $mlp_aktion_request_data['contact_phone'];
 
                 // Update the order meta
-                $value = $mlp_aktion_optin ? 'Ja' : 'Nein';
-                $order->update_meta_data('mlp_aktion_optin', $value);
-                $order->update_meta_data('mlp_aktion_contact_phone', $mlp_atkion_contact_phone);
+                $value = $mlp_aktion_optin ? 1 : 0;
+                $order->update_meta_data('_mlp_aktion_optin', $value);
+                $order->update_meta_data('_mlp_aktion_contact_phone', $mlp_atkion_contact_phone);
 
                 $order->save();
             },
@@ -108,14 +108,14 @@ class MLP_Aktion_Extend_Woo_Core
                     return;
                 }
 
-                $mlp_aktion_optin            = $order->get_meta('mlp_aktion_optin');
+                $mlp_aktion_optin            = $order->get_meta('_mlp_aktion_optin') ? 'Ja' : 'Nein';
 
                 echo '<div>';
                 echo '<strong>' . esc_html__('Teilnahme an MLP Aktion', $this->name) . '</strong>';
                 printf('<p>Zustimmung zur Teilnahme: %s</p>', esc_html($mlp_aktion_optin));
 
                 if ($mlp_aktion_optin == 'Ja') {
-                    $mlp_aktion_contact_phone = $order->get_meta('mlp_aktion_contact_phone');
+                    $mlp_aktion_contact_phone = $order->get_meta('_mlp_aktion_contact_phone');
                     printf('<p>Telefonnummer: %s</p>', esc_html($mlp_aktion_contact_phone));
                 }
 
@@ -137,7 +137,7 @@ class MLP_Aktion_Extend_Woo_Core
                     return;
                 }
 
-                $mlp_aktion_optin            = $order->get_meta('mlp_aktion_optin');
+                $mlp_aktion_optin            = $order->get_meta('_mlp_aktion_optin') ? 'Ja' : 'Nein';
 
                 echo '<div>';
                 echo '<strong>' . esc_html__('Teilnahme an MLP Aktion', $this->name) . '</strong>';
@@ -148,7 +148,7 @@ class MLP_Aktion_Extend_Woo_Core
                     printf('<p>Zustimmung zur Teilnahme: %s</p>', esc_html($mlp_aktion_optin));
 
 					if ($mlp_aktion_optin == 'Ja') {
-                        $mlp_aktion_contact_phone = $order->get_meta('mlp_aktion_contact_phone');
+                        $mlp_aktion_contact_phone = $order->get_meta('_mlp_aktion_contact_phone');
                         printf('<p>Telefonnummer: %s</p>', esc_html($mlp_aktion_contact_phone));
                     }
 				}
@@ -168,7 +168,7 @@ class MLP_Aktion_Extend_Woo_Core
                     return;
                 }
 
-                $mlp_aktion_optin            = $order->get_meta('mlp_aktion_optin');
+                $mlp_aktion_optin            = $order->get_meta('_mlp_aktion_optin') ? 'Ja' : 'Nein';
 
                 echo '<div>';
                 echo '<strong>' . esc_html__('Teilnahme an MLP Aktion', $this->name) . '</strong>';
@@ -179,7 +179,7 @@ class MLP_Aktion_Extend_Woo_Core
                     printf('<p>Zustimmung zur Teilnahme: %s</p>', esc_html($mlp_aktion_optin));
 
 					if ($mlp_aktion_optin == 'Ja') {
-                        $mlp_aktion_contact_phone = $order->get_meta('mlp_aktion_contact_phone');
+                        $mlp_aktion_contact_phone = $order->get_meta('_mlp_aktion_contact_phone');
                         printf('<p>Telefonnummer: %s</p>', esc_html($mlp_aktion_contact_phone));
                     }
 				}

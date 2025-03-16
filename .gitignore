@@ -2,3 +2,5 @@ node_modules/
 build/
 
 /vendor/
+/vendor-bin/
+/vendor_prefixed/

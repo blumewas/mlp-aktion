@@ -28,7 +28,7 @@ class Autoloader
      */
     public static function init()
     {
-        $autoloader = dirname(__DIR__) . '/vendor/autoload.php';
+        $autoloader = dirname(__DIR__) . '/vendor_prefixed/autoload.php';
 
         if (! is_readable($autoloader)) {
             self::missing_autoloader();

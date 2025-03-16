@@ -2,7 +2,8 @@
 
 namespace Blumewas\MlpAktion;
 
-use Blumewas\MlpAktion\Admin\Settings\AdminSettings;
+use Blumewas\MlpAktion\Admin\Dashboard;
+use Blumewas\MlpAktion\Admin\Settings\AdminWooSettings;
 use Blumewas\MlpAktion\Blocks\Mlp_Aktion_Woocommerce;
 use Blumewas\MlpAktion\Helper\Logger;
 use Blumewas\MlpAktion\Plugin\Assets;
@@ -197,8 +198,11 @@ class MlpAktion
         $assets->add_admin_asset($this->root_url() . 'css/mlp-aktion-admin.css');
 
         // Add Admin Settings
-        $settings = $this->make(AdminSettings::class);
+        $settings = $this->make(AdminWooSettings::class);
         $settings->init();
+
+        $dashboard = $this->make(Dashboard::class);
+        $dashboard->init();
     }
 
     /**

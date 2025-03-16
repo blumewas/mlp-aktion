@@ -2,7 +2,8 @@
 
 namespace Blumewas\MlpAktion;
 
-use Blumewas\MlpAktion\Admin\Settings\AdminSettings;
+use Blumewas\MlpAktion\Admin\Dashboard;
+use Blumewas\MlpAktion\Admin\Settings\AdminWooSettings;
 use Blumewas\MlpAktion\Helper\Logger;
 use Blumewas\MlpAktion\Plugin\Assets;
 use Blumewas\MlpAktion\Plugin\Hooks;
@@ -81,25 +82,34 @@ class Bootstrap
     {
         $this->container->register(
             Hooks::class,
-            function ( $container ) {
+            function ($container) {
                 return new Hooks();
             }
         );
 
         $this->container->register(
             Assets::class,
-            function ( $container ) {
+            function ($container) {
                 $hooks = $container->get(Hooks::class);
                 return new Assets($hooks);
             }
         );
 
         $this->container->register(
-            AdminSettings::class,
-            function ( $container ) {
+            Dashboard::class,
+            function ($container) {
                 $hooks = $container->get(Hooks::class);
 
-                return new AdminSettings($hooks);
+                return new Dashboard($hooks);
+            }
+        );
+
+        $this->container->register(
+            AdminWooSettings::class,
+            function ($container) {
+                $hooks = $container->get(Hooks::class);
+
+                return new AdminWooSettings($hooks);
             }
         );
     }
