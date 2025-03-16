@@ -1,5 +1,7 @@
 <?php
 
+namespace Blumewas\MlpAktion\Blocks;
+
 /**
  * The public-facing functionality of the plugin.
  *
@@ -58,15 +60,11 @@ class Mlp_Aktion_Woocommerce
 
     public function register_block_types()
     {
-        register_block_type_from_metadata( __DIR__ . '/../build/js/participate-checkbox' );
+        register_block_type_from_metadata( __DIR__ . '/../../build/js/participate-checkbox' );
     }
 
     public function load_mlp_aktion_block_extension()
     {
-		require_once __DIR__ . '/MLP_Aktion_Extend_Store_Endpoint.php';
-        require_once __DIR__ . '/MLP_Aktion_Extend_Woo_Core.php';
-        require_once __DIR__ . '/MLP_Aktion_Blocks_Integration.php';
-
         // Initialize our store endpoint extension when WC Blocks is loaded.
         MLP_Aktion_Extend_Store_Endpoint::init();
 

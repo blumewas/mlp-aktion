@@ -1,4 +1,7 @@
 <?php
+
+namespace Blumewas\MlpAktion\Blocks;
+
 use Automattic\WooCommerce\Blocks\Integrations\IntegrationInterface;
 
 /**
@@ -22,7 +25,6 @@ class MLP_Aktion_Blocks_Integration implements IntegrationInterface
      */
     public function initialize()
     {
-        require_once __DIR__ . '/MLP_Aktion_Extend_Store_Endpoint.php';
         $this->register_participate_checkbox_block_frontend_scripts();
         $this->register_participate_checkbox_block_editor_scripts();
         $this->register_participate_checkbox_block_editor_styles();
@@ -34,8 +36,8 @@ class MLP_Aktion_Blocks_Integration implements IntegrationInterface
      */
     private function register_main_integration()
     {
-        $script_path = '/../build/index.js';
-        $style_path  = '/../build/style-mlp-aktion-participate-checkbox.css';
+        $script_path = '/../../build/index.js';
+        $style_path  = '/../../build/style-mlp-aktion-participate-checkbox.css';
 
         $script_url = plugins_url($script_path, __FILE__);
         $style_url  = plugins_url($style_path, __FILE__);
@@ -121,7 +123,7 @@ class MLP_Aktion_Blocks_Integration implements IntegrationInterface
 
     public function register_participate_checkbox_block_editor_styles()
     {
-        $style_path = '/../build/style-mlp-aktion-participate-checkbox.css';
+        $style_path = '/../../build/style-mlp-aktion-participate-checkbox.css';
 
         $style_url = plugins_url($style_path, __FILE__);
         wp_enqueue_style(
@@ -134,9 +136,9 @@ class MLP_Aktion_Blocks_Integration implements IntegrationInterface
 
     public function register_participate_checkbox_block_editor_scripts()
     {
-        $script_path       = '/../build/mlp-aktion-participate-checkbox.js';
+        $script_path       = '/../../build/mlp-aktion-participate-checkbox.js';
         $script_url        = plugins_url($script_path, __FILE__);
-        $script_asset_path = plugin_dir_path(__FILE__) . '../../build/mlp-aktion-participate-checkbox.asset.php';
+        $script_asset_path = plugin_dir_path(__FILE__) . '../../../build/mlp-aktion-participate-checkbox.asset.php';
 
         $script_asset      = file_exists($script_asset_path)
             ? require $script_asset_path
@@ -162,9 +164,9 @@ class MLP_Aktion_Blocks_Integration implements IntegrationInterface
 
     public function register_participate_checkbox_block_frontend_scripts()
     {
-        $script_path       = '/../build/mlp-aktion-participate-checkbox-frontend.js';
+        $script_path       = '/../../build/mlp-aktion-participate-checkbox-frontend.js';
         $script_url        = plugins_url($script_path, __FILE__);
-        $script_asset_path = plugin_dir_path(__FILE__) . '../../build/mlp-aktion-participate-checkbox-frontend.asset.php';
+        $script_asset_path = plugin_dir_path(__FILE__) . '../../../build/mlp-aktion-participate-checkbox-frontend.asset.php';
 
         $script_asset      = file_exists($script_asset_path)
             ? require $script_asset_path

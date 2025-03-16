@@ -3,6 +3,7 @@
 namespace Blumewas\MlpAktion;
 
 use Blumewas\MlpAktion\Admin\Settings\AdminSettings;
+use Blumewas\MlpAktion\Blocks\Mlp_Aktion_Woocommerce;
 use Blumewas\MlpAktion\Helper\Logger;
 use Blumewas\MlpAktion\Plugin\Assets;
 use Blumewas\MlpAktion\Plugin\Hooks;
@@ -129,6 +130,9 @@ class MlpAktion
         // Init Admin and public parts
         $this->init_public();
         $this->init_admin();
+
+        // Register Woo Blocks
+        $this->register_custom_blocks();
 
         // Log initialized
         Logger::log('Initialized');
@@ -283,14 +287,17 @@ class MlpAktion
         return $dir;
     }
 
-    // public function register_custom_blocks()
-    // {
-    //     $plugin_woo = new Mlp_Aktion_Woocommerce($this->get_plugin_name(), $this->get_version());
+    // TODO - refactor
+    public function register_custom_blocks()
+    {
+        $plugin_woo = new Mlp_Aktion_Woocommerce($this->plugin_name, $this->version);
 
-    //     $this->loader->add_action('init', $plugin_woo, 'register_block_types');
-    //     $this->loader->add_action('woocommerce_blocks_loaded', $plugin_woo, 'load_mlp_aktion_block_extension');
+        $hooks = $this->make(Hooks::class);
 
-    //     $this->loader->add_action('block_categories_all', $plugin_woo, 'register_mlp_aktion_block_category', 10, 2);
-    // }
+        $hooks->add_action('init', $plugin_woo, 'register_block_types');
+        $hooks->add_action('woocommerce_blocks_loaded', $plugin_woo, 'load_mlp_aktion_block_extension');
+
+        $hooks->add_action('block_categories_all', $plugin_woo, 'register_mlp_aktion_block_category', 10, 2);
+    }
 
 }

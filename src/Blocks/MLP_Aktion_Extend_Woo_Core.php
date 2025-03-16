@@ -1,5 +1,7 @@
 <?php
 
+namespace Blumewas\MlpAktion\Blocks;
+
 use Automattic\WooCommerce\Blocks\Package;
 use Automattic\WooCommerce\Blocks\StoreApi\Schemas\CartSchema;
 use Automattic\WooCommerce\Blocks\StoreApi\Schemas\CheckoutSchema;

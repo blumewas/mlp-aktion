@@ -1,8 +1,12 @@
 <?php
 
+namespace Blumewas\MlpAktion\Blocks;
+
 use Automattic\WooCommerce\Blocks\Package;
 use Automattic\WooCommerce\Blocks\StoreApi\Schemas\CartSchema;
 use Automattic\WooCommerce\Blocks\StoreApi\Schemas\CheckoutSchema;
+use Automattic\WooCommerce\StoreApi\StoreApi;
+use Automattic\WooCommerce\StoreApi\Schemas\ExtendSchema;
 
 class MLP_Aktion_Extend_Store_Endpoint
 {
@@ -26,7 +30,7 @@ class MLP_Aktion_Extend_Store_Endpoint
      */
     public static function init()
     {
-        self::$extend = Automattic\WooCommerce\StoreApi\StoreApi::container()->get(Automattic\WooCommerce\StoreApi\Schemas\ExtendSchema::class);
+        self::$extend = StoreApi::container()->get(ExtendSchema::class);
         self::extend_store();
     }
 
@@ -40,7 +44,7 @@ class MLP_Aktion_Extend_Store_Endpoint
                 [
                     'endpoint'        => CheckoutSchema::IDENTIFIER,
                     'namespace'       => self::IDENTIFIER,
-                    'schema_callback' => [ 'MLP_Aktion_Extend_Store_Endpoint', 'extend_checkout_schema' ],
+                    'schema_callback' => [ self::class, 'extend_checkout_schema' ],
                     'schema_type'     => ARRAY_A,
                 ]
             );

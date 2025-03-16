@@ -161,7 +161,6 @@ class Assets
             'admin_enqueue_scripts',
             null,
             function () {
-                Logger::log('admin script');
                 $admin_scripts = $this->admin_assets['script'];
                 foreach ($admin_scripts as $script) {
                     // enquue scripts
