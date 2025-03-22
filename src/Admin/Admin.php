@@ -39,21 +39,6 @@ class Admin
         );
     }
 
-    public function add_menu()
-    {
-        add_submenu_page(
-            'woocommerce',
-            'Export Orders (Excel)',
-            'Export Orders (Excel)',
-            'manage_woocommerce',
-            'export-orders-xlsx',
-            [
-                $this,
-                'render_export_page_xlsx',
-            ]
-        );
-    }
-
     public function render_export_page_xlsx() {
         echo '
         <div class="wrap">
@@ -83,14 +68,5 @@ class Admin
                 $this->hooks->add_action('admin_menu', $menuInstance, 'add_menu');
             }
         }
-
-        if (method_exists($this, 'add_menu')) {
-            $this->hooks->add_action(
-                'admin_menu',
-                $this,
-                'add_menu',
-            );
-        }
-
     }
 }
