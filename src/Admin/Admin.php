@@ -5,6 +5,8 @@ namespace Blumewas\MlpAktion\Admin;
 use Blumewas\MlpAktion\Admin\Actions\ExportOrders;
 use Blumewas\MlpAktion\Admin\Menu\MlpAktionMenu;
 use Blumewas\MlpAktion\Admin\Util\Menu;
+use Blumewas\MlpAktion\Helper\Logger;
+use Blumewas\MlpAktion\Plugin\Assets;
 use Blumewas\MlpAktion\Plugin\Hooks;
 
 class Admin
@@ -19,6 +21,7 @@ class Admin
 
     public function __construct(
         private Hooks $hooks,
+        private Assets $assets,
     ) {
     }
 
@@ -29,9 +32,14 @@ class Admin
      */
     public function init()
     {
-        // Register our menu
-        $this->registerMenu();
+        Logger::log('Initializing admin');
+        // Register assets
+        $this->register_assets();
 
+        // Register our menu
+        $this->register_menu();
+
+        // TODO remove
         $this->hooks->add_action(
             'admin_post_export_orders_xlsx',
             $this,
@@ -39,16 +47,7 @@ class Admin
         );
     }
 
-    public function render_export_page_xlsx() {
-        echo '
-        <div class="wrap">
-            <h1>Export Orders to Excel</h1>
-            <a href="'. admin_url('admin-post.php?action=export_orders_xlsx') . '" class="button button-primary">
-                Download Excel (.xlsx)
-            </a>
-        </div>';
-    }
-
+    // TODO remove
     public function export_orders()
     {
         $action = new ExportOrders();
@@ -56,7 +55,16 @@ class Admin
         $action('_mlp_aktion_optin', 1);
     }
 
-    protected function registerMenu(): void
+    protected function register_assets(): void
+    {
+        $this->assets->add_admin_asset(
+            asset('admin/js/mlp-aktion-admin.js'),
+            ['jquery'],
+        );
+
+    }
+
+    protected function register_menu(): void
     {
         // If we have a mainMenu class
         if (isset($this->mainMenu) && is_string($this->mainMenu)) {

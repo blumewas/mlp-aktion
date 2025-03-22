@@ -4,9 +4,10 @@
  * Helper functions for our plugin.
  *
  * @link              https://bonnermedis.de
- * @since             {VERSION}
+ * @since             1.0.2
  * @package           Mlp_Aktion
  */
+
 if (! defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
@@ -59,17 +60,44 @@ if (! function_exists('class_basename')) {
     }
 }
 
-if (! function_exists('admin_asset')) {
+if (! function_exists('asset')) {
+    function asset(string $path): string
+    {
+        $ext = pathinfo($path, PATHINFO_EXTENSION);
+
+        return match($ext) {
+            'php' => asset_path($path),
+            default => asset_url($path),
+        };
+    }
+}
+
+if (! function_exists('asset_path')) {
+    function asset_path(string $path): string
+    {
+        return project_path("assets/$path");
+    }
+}
+
+if (! function_exists('asset_url')) {
     /**
-     * Get admin asset path
+     * Get the url for our asset
      *
      * @param string $path
-     * @return string - the relative path
+     * @return string
      */
-    function admin_asset(string $path): string
+    function asset_url(string $path): string
     {
-        // prepend assets/admin path
-        return project_path("assets/admin/$path");
+        // Get file name to append later
+        $projectPath = project_path("assets/$path");
+
+        if (! $projectPath || ! file_exists($projectPath)) {
+            return '';
+        }
+
+        $fileName = basename($projectPath);
+
+        return plugin_dir_url(project_path("assets/$path")) . "$fileName";
     }
 }
 

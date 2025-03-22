@@ -8,7 +8,9 @@
             "Blumewas\\MlpAktion\\": "src/"
         },
         "files": [
-            "./src/helper.php"
+            "./src/helper.php",
+            "./src/woo-helper.php"
+
         ]
     },
     "authors": [

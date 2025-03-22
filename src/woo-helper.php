@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Helper functions for our plugin when working with woocommerce.
+ *
+ * @link              https://bonnermedis.de
+ * @since             1.0.2
+ * @package           Mlp_Aktion
+ */
+
 // If this file is called directly, abort.
 if (! defined('ABSPATH')) {
     die;

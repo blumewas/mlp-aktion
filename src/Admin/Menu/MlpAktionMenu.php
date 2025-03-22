@@ -13,7 +13,7 @@ class MlpAktionMenu extends Menu
 
     public function render()
     {
-        include admin_asset("templates/admin_menu.php");
+        include asset("admin/templates/admin_menu.php");
     }
 
 }

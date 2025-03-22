@@ -1,102 +1,156 @@
-import gulp from 'gulp';
 import { createRequire } from 'module';
-import clean from 'gulp-clean';
-import merge from 'merge-stream';
+
+import gulp from 'gulp';
+import replace from 'gulp-replace';
+import uglify from 'gulp-uglify';
+import cached from 'gulp-cached';
+import debug from 'gulp-debug';
+import { series, parallel } from 'gulp';
+import zip from 'gulp-zip';
 
 const packageJSONRequire = createRequire( import.meta.url );
 const packageJSON = packageJSONRequire( './package.json' );
+
+// TODO build our admin assets
+// TODO build our public assets
 
 const plugin = {
     name: 'MLP Aktion',
 	slug: 'mlp-aktion',
     // File Globs
+    mainPhp: 'mlp-aktion.php',
     files: [
+        "index.php",
+        "LICENSE.txt",
+        "mlp-aktion.php",
+        "README.txt",
+        "uninstall.php"
     ],
+    directories: [
+        "build",
+        "classes",
+        "includes",
+        "assets/languages",
+        "src",
+    ],
+    // Versioned Files
+    versionedFiles: [
+        "**/*.php",
+        "!assets/**",
+        "!build/**",
+        "!vendor/**",
+        "!vendor-bin/**",
+        "!node_modules/**",
+		// "**/*.js",
+    ],
+    js: [
+        'assets/admin/js/**/*',
+        '!assets/js/*',
+        '!assets/languages/*',
+    ]
 };
 
 /**
- * Generate .pot files for Lite and Pro.
- *
- * TODO
+ * Build our JS
  */
-gulp.task( 'pot:lite', function ( cb ) {
-	exec(
-		'wp i18n make-pot ./ ./assets/languages/wp-mail-smtp.pot --slug="wp-mail-smtp" --domain="wp-mail-smtp" --package-name="WP Mail SMTP" --file-comment="" --exclude=".codeception,.github,.packages,build,node_modules,php-scoper,vendor,vendor-prefixed,assets/vue,vue-app"',
-		function ( err, stdout, stderr ) {
-			console.log( stdout );
-			console.log( stderr );
-			cb( err );
-		}
-	);
+gulp.task( 'js', function () {
+	return gulp.src( plugin.js )
+			   .pipe( cached( 'pluginJS' ) )
+			   .pipe( uglify() ).on( 'error', console.log )
+			//    .pipe( rename( function ( path ) {
+			// 	   if ( /-pro-/.test( path.basename ) ) {
+			// 		   path.dirname = '/assets/pro/js';
+			// 	   }
+			// 	   else {
+			// 		   path.dirname = '/assets/js';
+			// 	   }
+			// 	   path.basename += '.min';
+			//    } ) )
+			   .pipe( gulp.dest( './dist' ) )
+			   .pipe( debug( { title: '[js]' } ) );
 } );
-gulp.task( 'pot:pro', function ( cb ) {
-	exec(
-		'wp i18n make-pot ./ ./assets/pro/languages/wp-mail-smtp-pro.pot --slug="wp-mail-smtp-pro" --domain="wp-mail-smtp-pro" --package-name="WP Mail SMTP" --file-comment="" --exclude=".codeception,.github,.packages,build,node_modules,php-scoper,vendor,vendor-prefixed,assets/vue,vue-app"',
-		function ( err, stdout, stderr ) {
-			console.log( stdout );
-			console.log( stderr );
-			cb( err );
-		}
-	);
-} );
-gulp.task( 'pot', gulp.series( 'pot:lite', 'pot:pro' ) );
 
 /**
- * VENDOR Handling
+ * Fix for ZipStream error
  */
-gulp.task( 'composer:delete_prefixed_vendor_libraries', function () {
-	return gulp.src(
-			[
-                'vendor/aws',
-			],
-			{ allowEmpty: true, read: false }
+gulp.task('prefix:fix-zipstream', function () {
+    return gulp.src('src/Dependencies/**/*.php') // Select all PHP files in "src" and subdirectories
+        .pipe(replace(/(public static function newZipStream\(\$fileHandle\):)\s*Blumewas\\MlpAktion\\Dependencies\\(ZipStream)/g, '$1 $2'))
+        .pipe(replace(/(private|public)\s+Blumewas\\MlpAktion\\Dependencies\\(ZipStream)\s+\$(\w+);/g, '$1 $2 $$$3;'))
+        .pipe(gulp.dest('src/Dependencies')); // Overwrites files in the same location
+});
+
+/**
+ * Versioning
+ */
+gulp.task( 'plugin:replace-version', function () {
+	return gulp.src( [ plugin.mainPhp ] )
+		.pipe(
+			// File header.
+			replace(
+				/Version:(\s*)\d+\.\d+\.\d+/gm,
+				`Version:$1${packageJSON.version}`
+			)
 		)
-		.pipe( clean() );
+		.pipe(
+			// PHP constant.
+			replace(
+				/define\(\s?'MLP_AKTION_VERSION', '((\*)|([0-9]+(\.((\*)|([0-9]+(\.((\*)|([0-9]+)))?)))?))'\s?\);/gm,
+                `define( 'MLP_AKTION_VERSION', '${packageJSON.version}' );`
+			)
+		)
+		.pipe( gulp.dest( './' ) );
 } );
-
-gulp.task( 'composer:delete_unneeded_vendor_libraries', function () {
-	return gulp.src(
-		[
-'vendor/firebase',
-			'vendor/wikimedia',
-		],
-		{ allowEmpty: true, read: false }
-	)
-		.pipe( clean() );
+/**
+ * Replace plugin version with one from package.json in @since comments in plugin PHP and JS files.
+ */
+gulp.task( 'plugin:replace-since-version', function () {
+	return gulp.src( plugin.versionedFiles )
+		.pipe(
+			replace(
+				/@since(\s+){VERSION}/g,
+                `@since$1${packageJSON.version}`
+			)
+		)
+		.pipe( gulp.dest( './' ) );
 } );
-
-gulp.task( 'composer:create_vendor_prefixed_folder', function () {
-	return gulp.src( '*.*', { read: false } )
-		.pipe( gulp.dest( './vendor_prefixed' ) );
-} );
-
-gulp.task( 'composer:prefix', function ( cb ) {
-	exec( 'composer prefix-dependencies', function ( err, stdout, stderr ) {
-		console.log( stdout );
-		console.log( stderr );
-		cb( err );
-	} );
-} );
+gulp.task( 'plugin:version', gulp.series( 'plugin:replace-version', 'plugin:replace-since-version' ) );
 
 /**
- * Update namespace of certain files that php-scoper can't patch.
+ * Package the plugin
  */
-gulp.task( 'prefix_outside_files', function () {
-	return merge(
-		// gulp.src( [ 'vendor/codeception/codeception/src/Codeception/Util/Uri.php' ], { allowEmpty: true } )
-		// 	.pipe( replace( /use GuzzleHttp\\Psr7\\Uri as Psr7Uri;/gm, 'use WPMailSMTP\\Vendor\\GuzzleHttp\\Psr7\\Uri as Psr7Uri;' ) )
-		// 	.pipe( gulp.dest( 'vendor/codeception/codeception/src/Codeception/Util/' ) ),
+gulp.task('zip', function () {
+    const name = plugin.slug ?? packageJSON.name ?? 'plugin';
 
-		// gulp.src( [ 'vendor_prefixed/symfony/polyfill-mbstring/bootstrap.php', 'vendor_prefixed/symfony/polyfill-mbstring/bootstrap80.php' ], { allowEmpty: true } )
-		// 	.pipe( replace( /use Symfony\\Polyfill\\Mbstring/gm, 'use WPMailSMTP\\Vendor\\Symfony\\Polyfill\\Mbstring' ) )
-		// 	.pipe( gulp.dest( 'vendor_prefixed/symfony/polyfill-mbstring/' ) ),
+    // List all files and directories
+    const filesAndDirs = [
+        ...plugin.files,
+        ...plugin.directories.map((dirName) => `${dirName}/**/*`),
+    ];
 
-		// gulp.src( [ 'vendor_prefixed/symfony/polyfill-mbstring/Resources/mb_convert_variables.php8' ], { allowEmpty: true } )
-		// 	.pipe( replace( /use Symfony\\Polyfill\\Mbstring/gm, 'use WPMailSMTP\\Vendor\\Symfony\\Polyfill\\Mbstring' ) )
-		// 	.pipe( gulp.dest( 'vendor_prefixed/symfony/polyfill-mbstring/Resources/' ) ),
+    return gulp.src(
+        filesAndDirs,
+        {
+            allowEmpty: true,
+            base: '.',
+        }
+    )
+        .pipe(zip(`${name}.zip`))
+        .pipe(gulp.dest('.'));
+});
 
-		// gulp.src( [ 'vendor_prefixed/symfony/polyfill-intl-idn/bootstrap.php', 'vendor_prefixed/symfony/polyfill-intl-idn/bootstrap80.php' ], { allowEmpty: true } )
-		// 	.pipe( replace( /use Symfony\\Polyfill\\Intl\\Idn/gm, 'use WPMailSMTP\\Vendor\\Symfony\\Polyfill\\Intl\\Idn' ) )
-		// 	.pipe( gulp.dest( 'vendor_prefixed/symfony/polyfill-intl-idn/' ) ),
-	);
-} );
+/**
+ * Watch task.
+ */
+/**
+ * Look out for relevant sass/js changes.
+ */
+gulp.task('watch', function () {
+	// gulp.watch( plugin.scss, gulp.parallel( 'css' ) );
+	gulp.watch( plugin.js, gulp.parallel( 'js' ) );
+});
+
+/**
+ * Default tasks
+ */
+gulp.task('default', series('prefix:fix-zipstream', 'plugin:version', 'zip'));

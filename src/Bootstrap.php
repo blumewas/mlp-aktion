@@ -7,6 +7,7 @@ use Blumewas\MlpAktion\Admin\Settings\AdminWooSettings;
 use Blumewas\MlpAktion\Helper\Logger;
 use Blumewas\MlpAktion\Plugin\Assets;
 use Blumewas\MlpAktion\Plugin\Hooks;
+use Blumewas\MlpAktion\Public\Section;
 use Blumewas\MlpAktion\Registry\Container;
 
 class Bootstrap
@@ -63,6 +64,7 @@ class Bootstrap
 
     private function load_assets()
     {
+        Logger::log('Bootstraping assets');
         $assets = $this->container->get(Assets::class);
         $assets->load();
     }
@@ -80,6 +82,7 @@ class Bootstrap
      */
     protected function register_dependencies()
     {
+        // Add Hooks and Assets base to container
         $this->container->register(
             Hooks::class,
             function ($container) {
@@ -95,13 +98,25 @@ class Bootstrap
             }
         );
 
+        // Register our public section
+        $this->container->register(
+            Section::class,
+            function ($container) {
+                $hooks = $container->get(Hooks::class);
+                $assets = $container->get(Assets::class);
+
+                return new Section($hooks, $assets);
+            }
+        );
+
         // Register our admin section
         $this->container->register(
             Admin::class,
             function ($container) {
                 $hooks = $container->get(Hooks::class);
+                $assets = $container->get(Assets::class);
 
-                return new Admin($hooks);
+                return new Admin($hooks, $assets);
             }
         );
 
