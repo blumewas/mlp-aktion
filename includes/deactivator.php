@@ -1,15 +1,4 @@
 <?php
-
-/**
- * Fired during plugin deactivation
- *
- * @link       https://bonnermedis.de
- * @since      1.0.0
- *
- * @package    Mlp_Aktion
- * @subpackage Mlp_Aktion/includes
- */
-
 /**
  * Fired during plugin deactivation.
  *

@@ -2,8 +2,6 @@
 
 namespace Blumewas\MlpAktion\Plugin;
 
-use Blumewas\MlpAktion\Helper\Logger;
-
 /**
  * Register all assets for the plugin.
  *
