@@ -2,9 +2,8 @@
 
 namespace Blumewas\MlpAktion\Admin\Actions;
 
-use Blumewas\MlpAktion\Helper\Logger;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Blumewas\MlpAktion\Dependencies\PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Blumewas\MlpAktion\Dependencies\PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ExportOrders
 {
