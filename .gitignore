@@ -1,6 +1,9 @@
 node_modules/
 build/
 
+/src/Dependencies/**
+
 /vendor/
-/vendor-bin/
+/vendor-bin/**/vendor/
+
 /vendor_prefixed/

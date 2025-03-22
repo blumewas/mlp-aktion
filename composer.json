@@ -29,24 +29,38 @@
         "bamarni/composer-bin-plugin": "^1.8"
     },
     "scripts": {
-        "pre-install-cmd": "@create-vendor-prefix-folder",
-        "pre-update-cmd": "@create-vendor-prefix-folder",
-        "test": [
-            "phpunit"
+        "post-install-cmd": [
+            "@build"
         ],
-        "prefix-dependencies": [
-            "vendor/bin/php-scoper add-prefix --output-dir=./vendor_prefixed --force",
-            "npm run gulp composer:delete_prefixed_vendor_libraries",
-            "npm run gulp composer:delete_unneeded_vendor_libraries",
-            "@composer dump-autoload -o -a"
-        ],
-        "clean-install": [
-            "composer update --root-reqs --no-dev --no-plugins -o -a"
+        "post-update-cmd": [
+            "@build"
         ],
         "build": [
-            "@clean-install",
-            "@prefix-dependencies"
+            "\"vendor-bin/mozart/vendor/bin/mozart\" compose",
+            "composer dump-autoload"
         ],
-        "create-vendor-prefix-folder": "npm run gulp composer:create_vendor_prefixed_folder"
+        "test": [
+            "phpunit"
+        ]
+    },
+    "extra": {
+        "bamarni-bin": {
+            "bin-links": false,
+            "target-directory": "vendor-bin",
+            "forward-command": true
+        },
+        "mozart": {
+            "dep_namespace": "Blumewas\\MlpAktion\\Dependencies\\",
+            "dep_directory": "/src/Dependencies/",
+            "classmap_directory": "/classes/dependencies/",
+            "classmap_prefix": "BMA_",
+            "delete_vendor_directories": true,
+            "packages": [
+                "phpoffice/phpspreadsheet"
+            ],
+            "excluded_packages": [
+                "ext-zip"
+            ]
+        }
     }
 }
