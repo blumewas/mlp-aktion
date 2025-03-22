@@ -2,7 +2,7 @@
 
 namespace Blumewas\MlpAktion;
 
-use Blumewas\MlpAktion\Admin\Dashboard;
+use Blumewas\MlpAktion\Admin\Admin;
 use Blumewas\MlpAktion\Admin\Settings\AdminWooSettings;
 use Blumewas\MlpAktion\Blocks\Mlp_Aktion_Woocommerce;
 use Blumewas\MlpAktion\Helper\Logger;
@@ -201,8 +201,9 @@ class MlpAktion
         $settings = $this->make(AdminWooSettings::class);
         $settings->init();
 
-        $dashboard = $this->make(Dashboard::class);
-        $dashboard->init();
+        // Admin Parts
+        $admin = $this->make(Admin::class);
+        $admin->init();
     }
 
     /**
@@ -231,9 +232,6 @@ class MlpAktion
         );
 
         $this->container = $container;
-
-        Logger::log('Created container');
-
         return $container;
     }
 

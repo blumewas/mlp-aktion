@@ -3,23 +3,34 @@
 namespace Blumewas\MlpAktion\Admin;
 
 use Blumewas\MlpAktion\Admin\Actions\ExportOrders;
+use Blumewas\MlpAktion\Admin\Menu\MlpAktionMenu;
+use Blumewas\MlpAktion\Admin\Util\Menu;
 use Blumewas\MlpAktion\Plugin\Hooks;
 
-class Dashboard
+class Admin
 {
+    /**
+     * The main menu class for our plugin.
+     * Remove or set to null to skip registration.
+     *
+     * @var class-string<Menu>
+     */
+    public $mainMenu = MlpAktionMenu::class;
 
     public function __construct(
         private Hooks $hooks,
     ) {
     }
 
+    /**
+     * Init our admin section
+     *
+     * @return void
+     */
     public function init()
     {
-        $this->hooks->add_action(
-            'admin_menu',
-            $this,
-            'add_menu',
-        );
+        // Register our menu
+        $this->registerMenu();
 
         $this->hooks->add_action(
             'admin_post_export_orders_xlsx',
@@ -58,5 +69,28 @@ class Dashboard
         $action = new ExportOrders();
 
         $action('_mlp_aktion_optin', 1);
+    }
+
+    protected function registerMenu(): void
+    {
+        // If we have a mainMenu class
+        if (isset($this->mainMenu) && is_string($this->mainMenu)) {
+            // TODO - resolve dependencies container?
+            $menuInstance = (new $this->mainMenu);
+
+            // Check if instance is type menu
+            if ($menuInstance instanceof Menu) {
+                $this->hooks->add_action('admin_menu', $menuInstance, 'add_menu');
+            }
+        }
+
+        if (method_exists($this, 'add_menu')) {
+            $this->hooks->add_action(
+                'admin_menu',
+                $this,
+                'add_menu',
+            );
+        }
+
     }
 }

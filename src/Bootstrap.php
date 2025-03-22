@@ -2,7 +2,7 @@
 
 namespace Blumewas\MlpAktion;
 
-use Blumewas\MlpAktion\Admin\Dashboard;
+use Blumewas\MlpAktion\Admin\Admin;
 use Blumewas\MlpAktion\Admin\Settings\AdminWooSettings;
 use Blumewas\MlpAktion\Helper\Logger;
 use Blumewas\MlpAktion\Plugin\Assets;
@@ -95,12 +95,13 @@ class Bootstrap
             }
         );
 
+        // Register our admin section
         $this->container->register(
-            Dashboard::class,
+            Admin::class,
             function ($container) {
                 $hooks = $container->get(Hooks::class);
 
-                return new Dashboard($hooks);
+                return new Admin($hooks);
             }
         );
 
