@@ -6,7 +6,10 @@
     "autoload": {
         "psr-4": {
             "Blumewas\\MlpAktion\\": "src/"
-        }
+        },
+        "files": [
+            "./src/helper.php"
+        ]
     },
     "authors": [
         {
