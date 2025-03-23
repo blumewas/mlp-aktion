@@ -2,7 +2,6 @@
 
 namespace Blumewas\MlpAktion\Public;
 
-use Blumewas\MlpAktion\Helper\Logger;
 use Blumewas\MlpAktion\Plugin\Assets;
 use Blumewas\MlpAktion\Plugin\Hooks;
 
@@ -26,7 +25,6 @@ class Section
 
     protected function register_assets(): void
     {
-        Logger::log('Add public assets');
         $this->assets->add_public_asset(
             asset('public/js/mlp-aktion-public.js'),
             ['jquery'],

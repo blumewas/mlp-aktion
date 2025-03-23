@@ -7,9 +7,6 @@
  * @since             1.0.2
  * @package           Mlp_Aktion
  */
-
-use Blumewas\MlpAktion\Helper\Logger;
-
 if (! defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
@@ -77,8 +74,6 @@ if (! function_exists('asset')) {
 if (! function_exists('asset_path')) {
     function asset_path(string $path): string
     {
-        Logger::log(project_path("assets/$path"));
-
         return project_path("assets/$path");
     }
 }
@@ -116,8 +111,6 @@ if (! function_exists('project_path')) {
     {
         // Relative
         $project_root = project_root();
-
-        Logger::log(project_root());
 
         return sanitize_path($path, $project_root);
     }
@@ -166,10 +159,6 @@ if (! function_exists('sanitize_path')) {
         // Ensure the base directory is absolute and resolve the path
         $base_dir = $base_dir ? realpath($base_dir) : realpath(project_root());
         $safe_path = realpath($base_dir . DIRECTORY_SEPARATOR . $path);
-
-        Logger::log($base_dir);
-        Logger::log($base_dir . DIRECTORY_SEPARATOR . $path);
-
 
         // Check if the path is inside the base directory
         if (strpos($safe_path, $base_dir) !== 0 || !file_exists($safe_path)) {
