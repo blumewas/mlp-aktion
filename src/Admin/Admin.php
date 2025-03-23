@@ -32,7 +32,6 @@ class Admin
      */
     public function init()
     {
-        Logger::log('Initializing admin');
         // Register assets
         $this->register_assets();
 
