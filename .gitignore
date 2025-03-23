@@ -1,4 +1,12 @@
 node_modules/
 build/
+dist/
+
+/src/Dependencies/**
 
 /vendor/
+/vendor-bin/**/vendor/
+
+/vendor_prefixed/
+
+*.zip

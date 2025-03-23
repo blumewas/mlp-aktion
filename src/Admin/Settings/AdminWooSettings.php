@@ -4,7 +4,7 @@ namespace Blumewas\MlpAktion\Admin\Settings;
 
 use Blumewas\MlpAktion\Plugin\Hooks;
 
-class AdminSettings
+class AdminWooSettings
 {
     public function __construct(
         private Hooks $hooks,

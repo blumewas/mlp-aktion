@@ -16,7 +16,7 @@
  * Plugin Name:       MLP Aktion
  * Plugin URI:        https://bonnermedis.de
  * Description:       Plugin um Aktionen und optionale Teilnahme Boxen für eine Bestellung hinzuzufügen.
- * Version:           1.0.0
+ * Version:           1.0.2
  * Author:            Andreas Schneider
  * Author URI:        https://bonnermedis.de/
  * License:           GPL-2.0+
@@ -71,7 +71,7 @@ if (version_compare(PHP_VERSION, '8.0.0', '>=')) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define('MLP_AKTION_VERSION', '1.0.1');
+define( 'MLP_AKTION_VERSION', '1.0.2' );
 
 /**
  * The code that runs during plugin activation.
@@ -101,12 +101,6 @@ register_deactivation_hook(__FILE__, 'deactivate_mlp_aktion');
  */
 function MlpAktion() // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid
 {
-    /**
-     * The core plugin class that is used to define internationalization,
-     * admin-specific hooks, and public-facing site hooks.
-     */
-    require plugin_dir_path(__FILE__) . 'includes/helper.php';
-
     $basename = plugin_basename(__FILE__);
 
     return MlpAktion::instance($basename);

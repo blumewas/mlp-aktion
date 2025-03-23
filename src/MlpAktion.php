@@ -2,13 +2,15 @@
 
 namespace Blumewas\MlpAktion;
 
-use Blumewas\MlpAktion\Admin\Settings\AdminSettings;
+use Blumewas\MlpAktion\Admin\Admin;
+use Blumewas\MlpAktion\Admin\Settings\AdminWooSettings;
 use Blumewas\MlpAktion\Blocks\Mlp_Aktion_Woocommerce;
 use Blumewas\MlpAktion\Helper\Logger;
 use Blumewas\MlpAktion\Plugin\Assets;
 use Blumewas\MlpAktion\Plugin\Hooks;
 use Blumewas\MlpAktion\Registry\Container;
 use Blumewas\MlpAktion\I18n\MlpAktionI18n;
+use Blumewas\MlpAktion\Public\Section;
 
 class MlpAktion
 {
@@ -107,9 +109,6 @@ class MlpAktion
 
         // Init the plugin
         $this->init();
-
-        // // Register/load our WooCommerce Blocks
-        // $this->register_custom_blocks();
     }
 
     /**
@@ -128,8 +127,8 @@ class MlpAktion
         $this->add_plugin_links();
 
         // Init Admin and public parts
-        $this->init_public();
         $this->init_admin();
+        $this->init_public();
 
         // Register Woo Blocks
         $this->register_custom_blocks();
@@ -164,18 +163,9 @@ class MlpAktion
      */
     protected function init_public()
     {
-        /** @var Assets */
-        $assets = $this->make(Assets::class);
-
-        $assets->add_public_asset(
-            $this->root_url() . 'js/mlp-aktion-public.js',
-            ['jquery'],
-            $this->version,
-        );
-
-        $directory = plugin_dir_path(__FILE__);
-
-        $assets->add_public_asset(plugin_dir_url($directory . '../public') . 'public/css/mlp-aktion-public.css');
+        // Admin Parts
+        $publicSection = $this->make(Section::class);
+        $publicSection->init();
 
     }
 
@@ -186,18 +176,12 @@ class MlpAktion
      */
     protected function init_admin()
     {
-        /** @var Assets */
-        $assets = $this->make(Assets::class);
-
-        $assets->add_admin_asset(
-            $this->root_url() . 'js/mlp-aktion-admin.js',
-            ['jquery'],
-            $this->version,
-        );
-        $assets->add_admin_asset($this->root_url() . 'css/mlp-aktion-admin.css');
+        // Admin Parts
+        $adminSection = $this->make(Admin::class);
+        $adminSection->init();
 
         // Add Admin Settings
-        $settings = $this->make(AdminSettings::class);
+        $settings = $this->make(AdminWooSettings::class);
         $settings->init();
     }
 
@@ -227,9 +211,6 @@ class MlpAktion
         );
 
         $this->container = $container;
-
-        Logger::log('Created container');
-
         return $container;
     }
 

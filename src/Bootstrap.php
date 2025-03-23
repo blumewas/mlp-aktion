@@ -2,10 +2,12 @@
 
 namespace Blumewas\MlpAktion;
 
-use Blumewas\MlpAktion\Admin\Settings\AdminSettings;
+use Blumewas\MlpAktion\Admin\Admin;
+use Blumewas\MlpAktion\Admin\Settings\AdminWooSettings;
 use Blumewas\MlpAktion\Helper\Logger;
 use Blumewas\MlpAktion\Plugin\Assets;
 use Blumewas\MlpAktion\Plugin\Hooks;
+use Blumewas\MlpAktion\Public\Section;
 use Blumewas\MlpAktion\Registry\Container;
 
 class Bootstrap
@@ -62,6 +64,7 @@ class Bootstrap
 
     private function load_assets()
     {
+        Logger::log('Bootstraping assets');
         $assets = $this->container->get(Assets::class);
         $assets->load();
     }
@@ -79,27 +82,50 @@ class Bootstrap
      */
     protected function register_dependencies()
     {
+        // Add Hooks and Assets base to container
         $this->container->register(
             Hooks::class,
-            function ( $container ) {
+            function ($container) {
                 return new Hooks();
             }
         );
 
         $this->container->register(
             Assets::class,
-            function ( $container ) {
+            function ($container) {
                 $hooks = $container->get(Hooks::class);
                 return new Assets($hooks);
             }
         );
 
+        // Register our public section
         $this->container->register(
-            AdminSettings::class,
-            function ( $container ) {
+            Section::class,
+            function ($container) {
+                $hooks = $container->get(Hooks::class);
+                $assets = $container->get(Assets::class);
+
+                return new Section($hooks, $assets);
+            }
+        );
+
+        // Register our admin section
+        $this->container->register(
+            Admin::class,
+            function ($container) {
+                $hooks = $container->get(Hooks::class);
+                $assets = $container->get(Assets::class);
+
+                return new Admin($hooks, $assets);
+            }
+        );
+
+        $this->container->register(
+            AdminWooSettings::class,
+            function ($container) {
                 $hooks = $container->get(Hooks::class);
 
-                return new AdminSettings($hooks);
+                return new AdminWooSettings($hooks);
             }
         );
     }

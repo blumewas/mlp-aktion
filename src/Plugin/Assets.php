@@ -100,7 +100,7 @@ class Assets
         $this->admin_assets[$type][] = [
             'src' => $src,
             'deps' => $deps,
-            'ver' => $ver,
+            'ver' => $ver ?? MLP_AKTION_VERSION,
             'media' => $media,
             'args' => $args
         ];
@@ -141,10 +141,10 @@ class Assets
     {
         $type = $type ?? $this->get_asset_type($src);
 
-        $this->admin_assets[$type][] = [
+        $this->public_assets[$type][] = [
             'src' => $src,
             'deps' => $deps,
-            'ver' => $ver,
+            'ver' => $ver ?? MLP_AKTION_VERSION,
             'media' => $media,
             'args' => $args
         ];

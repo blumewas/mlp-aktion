@@ -1,31 +1,14 @@
 {
     "name": "mlp-aktion",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "main": "build/index.js",
     "scripts": {
         "build": "wp-scripts build",
         "start": "wp-scripts start",
         "format": "wp-scripts format",
-        "lint:css": "wp-scripts lint-style",
-        "lint:js": "wp-scripts lint-js",
-        "plugin-zip": "wp-scripts plugin-zip",
-        "check": "wp-scripts check",
-        "env": "wp-env"
+        "env": "wp-env",
+        "gulp": "node ./node_modules/gulp/bin/gulp.js"
     },
-    "files": [
-        "admin",
-        "build",
-        "includes",
-        "languages",
-        "public",
-        "src",
-        "vendor",
-        "index.php",
-        "LICENSE.txt",
-        "mlp-aktion.php",
-        "README.txt",
-        "uninstall.php"
-    ],
     "keywords": [],
     "author": "",
     "license": "ISC",
@@ -42,6 +25,17 @@
     },
     "devDependencies": {
         "@woocommerce/dependency-extraction-webpack-plugin": "^2.2.0",
-        "@wordpress/env": "^10.20.0"
+        "@wordpress/env": "^10.20.0",
+        "gulp": "^5.0.0",
+        "gulp-cached": "^1.1.1",
+        "gulp-clean": "^0.4.0",
+        "gulp-debug": "^5.0.1",
+        "gulp-rename": "^2.0.0",
+        "gulp-replace": "^1.1.4",
+        "gulp-sourcemaps": "^3.0.0",
+        "gulp-uglify": "^3.0.2",
+        "gulp-watch": "^5.0.1",
+        "gulp-zip": "^6.1.0",
+        "merge-stream": "^2.0.0"
     }
 }
