@@ -8,6 +8,8 @@
  * @package           Mlp_Aktion
  */
 
+use Blumewas\MlpAktion\Helper\Logger;
+
 if (! defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
@@ -75,6 +77,8 @@ if (! function_exists('asset')) {
 if (! function_exists('asset_path')) {
     function asset_path(string $path): string
     {
+        Logger::log(project_path("assets/$path"));
+
         return project_path("assets/$path");
     }
 }
@@ -113,6 +117,8 @@ if (! function_exists('project_path')) {
         // Relative
         $project_root = project_root();
 
+        Logger::log(project_root());
+
         return sanitize_path($path, $project_root);
     }
 }
@@ -128,7 +134,7 @@ if (! function_exists('project_root')) {
         $dir = __DIR__;
 
         // Iterate through directories up
-        while (! file_exists($dir . '/composer.json') && ! file_exists($dir . '/wp-content/plugins')) {
+        while (! file_exists($dir . '/composer.json') && ! file_exists($dir . '/mlp-aktion.php')) {
             $dir = dirname($dir);
         }
 
@@ -137,9 +143,9 @@ if (! function_exists('project_root')) {
             return $dir;
         }
 
-        // If it's a WordPress plugin, return the plugin's root directory
-        if (file_exists($dir . '/wp-content/plugins')) {
-            return plugin_dir_path(__FILE__); // For WordPress plugin root
+        // If it's a WP Plugin we can try to finde our root file
+        if (file_exists($dir . '/mlp-aktion.php')) {
+            return $dir;
         }
 
         // Fallback to current directory if not found
@@ -155,10 +161,15 @@ if (! function_exists('sanitize_path')) {
      * @param ?string $base_dir
      * @return false|string - false if not existing
      */
-    function sanitize_path($path, $base_dir = null) {
+    function sanitize_path($path, $base_dir = null)
+    {
         // Ensure the base directory is absolute and resolve the path
         $base_dir = $base_dir ? realpath($base_dir) : realpath(project_root());
         $safe_path = realpath($base_dir . DIRECTORY_SEPARATOR . $path);
+
+        Logger::log($base_dir);
+        Logger::log($base_dir . DIRECTORY_SEPARATOR . $path);
+
 
         // Check if the path is inside the base directory
         if (strpos($safe_path, $base_dir) !== 0 || !file_exists($safe_path)) {

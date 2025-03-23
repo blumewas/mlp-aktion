@@ -50,6 +50,16 @@ class Admin
     // TODO remove
     public function export_orders()
     {
+        // Verify nonce
+        if (!isset($_GET['export_nonce']) || !wp_verify_nonce($_GET['export_nonce'], 'export_orders_action')) {
+            wp_die('Security check failed.');
+        }
+
+        // Check user capability
+        if (!current_user_can('manage_woocommerce')) {
+            wp_die('Unauthorized access.');
+        }
+
         $action = new ExportOrders();
 
         $action('_mlp_aktion_optin', 1);
@@ -60,6 +70,10 @@ class Admin
         $this->assets->add_admin_asset(
             asset('admin/js/mlp-aktion-admin.js'),
             ['jquery'],
+        );
+
+        $this->assets->add_public_asset(
+            asset('admin/css/admin.css'),
         );
 
     }

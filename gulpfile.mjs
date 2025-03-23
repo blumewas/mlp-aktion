@@ -6,13 +6,15 @@ import uglify from 'gulp-uglify';
 import cached from 'gulp-cached';
 import debug from 'gulp-debug';
 import { series, parallel } from 'gulp';
+import rename from 'gulp-rename';
 import zip from 'gulp-zip';
+
+import path from 'path';
 
 const packageJSONRequire = createRequire( import.meta.url );
 const packageJSON = packageJSONRequire( './package.json' );
 
-// TODO build our admin assets
-// TODO build our public assets
+// TODO create blocks folder inside assets
 
 const plugin = {
     name: 'MLP Aktion',
@@ -24,19 +26,24 @@ const plugin = {
         "LICENSE.txt",
         "mlp-aktion.php",
         "README.txt",
-        "uninstall.php"
+        "uninstall.php",
+        "vendor/autoload.php",
+        // PHP templates
+        "assets/**/templates/**/*.php",
     ],
     directories: [
         "build",
         "classes",
         "includes",
-        "assets/languages",
         "src",
+        "dist",
+        "assets/languages",
+
+        "vendor/composer",
     ],
     // Versioned Files
     versionedFiles: [
         "**/*.php",
-        "!assets/**",
         "!build/**",
         "!vendor/**",
         "!vendor-bin/**",
@@ -45,7 +52,16 @@ const plugin = {
     ],
     js: [
         'assets/admin/js/**/*',
+        'assets/public/js/**/*',
         '!assets/js/*',
+        '!assets/css/*',
+        '!assets/languages/*',
+    ],
+    css: [
+        'assets/admin/css/**/*',
+        'assets/public/css/**/*',
+        '!assets/js/*',
+        '!assets/css/*',
         '!assets/languages/*',
     ]
 };
@@ -54,21 +70,25 @@ const plugin = {
  * Build our JS
  */
 gulp.task( 'js', function () {
-	return gulp.src( plugin.js )
+	return gulp.src( plugin.js, { base: './assets' } )
 			   .pipe( cached( 'pluginJS' ) )
 			   .pipe( uglify() ).on( 'error', console.log )
-			//    .pipe( rename( function ( path ) {
-			// 	   if ( /-pro-/.test( path.basename ) ) {
-			// 		   path.dirname = '/assets/pro/js';
-			// 	   }
-			// 	   else {
-			// 		   path.dirname = '/assets/js';
-			// 	   }
-			// 	   path.basename += '.min';
-			//    } ) )
-			   .pipe( gulp.dest( './dist' ) )
+			   .pipe( gulp.dest( 'dist/' ) )
 			   .pipe( debug( { title: '[js]' } ) );
 } );
+
+/**
+ * Build our CSS
+ */
+gulp.task( 'css', function () {
+	return gulp.src( plugin.css, { base: './assets' } )
+			   .pipe( cached( 'pluginCSS' ) )
+			   .pipe( uglify() ).on( 'error', console.log )
+			   .pipe( gulp.dest( './dist' ) )
+			   .pipe( debug( { title: '[css]' } ) );
+} );
+
+gulp.task( 'assets', parallel( 'css', 'js' ));
 
 /**
  * Fix for ZipStream error
@@ -108,7 +128,7 @@ gulp.task( 'plugin:replace-since-version', function () {
 	return gulp.src( plugin.versionedFiles )
 		.pipe(
 			replace(
-				/@since(\s+){VERSION}/g,
+				/@since(\s+){VERSION}/gm,
                 `@since$1${packageJSON.version}`
 			)
 		)
@@ -135,6 +155,12 @@ gulp.task('zip', function () {
             base: '.',
         }
     )
+        .pipe(rename(function(file) {
+            // Move build assets into assets folder
+            if (file.dirname.startsWith('dist')) {
+                file.dirname = file.dirname.replace('dist', 'assets');
+            }
+        }))
         .pipe(zip(`${name}.zip`))
         .pipe(gulp.dest('.'));
 });
@@ -146,11 +172,11 @@ gulp.task('zip', function () {
  * Look out for relevant sass/js changes.
  */
 gulp.task('watch', function () {
-	// gulp.watch( plugin.scss, gulp.parallel( 'css' ) );
-	gulp.watch( plugin.js, gulp.parallel( 'js' ) );
+	gulp.watch( plugin.scss, parallel( 'css' ) );
+	gulp.watch( plugin.js, parallel( 'js' ) );
 });
 
 /**
  * Default tasks
  */
-gulp.task('default', series('prefix:fix-zipstream', 'plugin:version', 'zip'));
+gulp.task('default', series('prefix:fix-zipstream', 'plugin:version', 'assets', 'zip'));

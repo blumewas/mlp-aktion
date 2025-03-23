@@ -3,11 +3,11 @@
  * Our admin menu template
  *
  * @link              https://bonnermedis.de
- * @since             {VERSION}
+ * @since             1.0.2
  * @package           Mlp_Aktion/templates
  */
 
-$action_url = admin_url('admin-post.php?action=export_orders_xlsx');
+$action_url = admin_url('admin-post.php?action=export_orders_xlsx&export_nonce=' . wp_create_nonce('export_orders_action'));
 ?>
 
 <div class="wrap">
